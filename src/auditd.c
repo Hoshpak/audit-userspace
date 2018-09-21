@@ -224,7 +224,12 @@ static int extract_type(const char *str)
 	// ptr should be at 't'
 	ptr2 = strchr(ptr, ' ');
 	// get type=xxx in a buffer
-	tptr = strndupa(ptr, ptr2 - ptr);
+	#ifdef __GLIBC__
+		tptr = strndupa(ptr, ptr2 - ptr);
+	#else
+		tptr = alloca(ptr2 - ptr);
+		tptr = strncpy(tptr, ptr, ptr2 - ptr);
+	#endif
 	// find =
 	str = strchr(tptr, '=');
 	if (str == NULL)

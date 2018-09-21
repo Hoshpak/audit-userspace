@@ -160,10 +160,18 @@ static int extract_timestamp(const char *b, event *e)
 	char *ptr, *tmp, *tnode, *ttype;
 
 	e->node = NULL;
-	if (*b == 'n')
-		tmp = strndupa(b, 340);
-	else
-		tmp = strndupa(b, 80);
+	#ifdef __GLIBC__
+		if (*b == 'n')
+			tmp = strndupa(b, 340);
+		else
+			tmp = strndupa(b, 80);
+	#else
+		tmp = alloca(340);
+		if (*b == 'n')
+			tmp = strncpy(tmp, b, 340);
+		else
+			tmp = strncpy(tmp, b, 80);
+	#endif
 	ptr = audit_strsplit(tmp);
 	if (ptr) {
 		// Check to see if this is the node info

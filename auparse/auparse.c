@@ -1126,10 +1126,19 @@ static int extract_timestamp(const char *b, au_event_t *e)
 	int rc = 1;
 
         e->host = NULL;
-	if (*b == 'n')
-		tmp = strndupa(b, 340);
-	else
-		tmp = strndupa(b, 80);
+	#ifdef __GLIBC__
+		tmp = alloca(340);
+		if (*b == 'n')
+			tmp = strndupa(b, 340);
+		else
+			tmp = strndupa(b, 80);
+	#else
+		tmp = alloca(340);
+		if (*b == 'n')
+			tmp = strncpy(tmp, b, 340);
+		else
+			tmp = strncpy(tmp, b, 80);
+	#endif
 	ptr = audit_strsplit(tmp);
 	if (ptr) {
 		// Optionally grab the node - may or may not be included
