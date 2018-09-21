@@ -77,7 +77,7 @@ retry:
         pthread_mutex_unlock(&queue_lock);
     } else {
         pthread_mutex_unlock(&queue_lock);
-        pthread_yield(); /* Let dequeue thread run to clear queue */
+        sched_yield(); /* Let dequeue thread run to clear queue */
         retry_cnt++;
         goto retry;
     }
